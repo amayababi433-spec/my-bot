@@ -1,0 +1,607 @@
+{
+  "version": "2026.2-pro-ultra-max",
+  "total_prompts": 85,
+  "default_sampling": {
+    "temperature": 0.15,
+    "top_p": 0.9,
+    "repeat_penalty": 1.05,
+    "min_p": 0.05
+  },
+  "prompts": [
+    {
+      "id": "p01",
+      "tag": "#rca",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Zero-Guessing Root Cause Analysis",
+      "prompt": "INSPECT: Read the exact files referenced in the stack trace and trace the call chain across the workspace to detect the active language/runtime. EXECUTE: Identify the exact line, state mutation, null dereference, or async race condition causing the crash. Explain the root cause in at most 3 concise bullets, then apply the minimal surgical edit via file tools. CONSTRAINTS: Do NOT guess, do NOT apply band-aid try/catch blocks that swallow errors, and do NOT modify unrelated code. VERIFY: Run the relevant test, linter, or reproduction command and confirm the stack trace is eliminated."
+    },
+    {
+      "id": "p02",
+      "tag": "#hang",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Silent Failure & Hung Process Debugger",
+      "prompt": "INSPECT: Read the target file/function and audit every Promise, async/await, event listener, stream, lock, and network call in its execution path. EXECUTE: Add explicit AbortController/timeout guards, finally-block resource cleanup, and guaranteed error propagation so the function always settles. CONSTRAINTS: Never leave floating Promises, unresolved callbacks, or unclosed sockets/streams on error paths. VERIFY: Execute a syntax/type check and simulate a timeout or failure path to prove the process exits or rejects cleanly."
+    },
+    {
+      "id": "p03",
+      "tag": "#leak",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Memory Leak & High CPU Hunt",
+      "prompt": "INSPECT: Audit the target file or directory for unclosed file descriptors, dangling setInterval/event listeners, unbounded Maps/Sets/Arrays, and retained closures. EXECUTE: Rank every discovered leak by severity, state the retained memory path, and patch each leak using WeakMap/LRU bounds, explicit .off()/clearInterval(), and stream cleanup. CONSTRAINTS: Preserve all external function signatures and API behavior; zero placeholders. VERIFY: Run tests and confirm no dangling handles or syntax regressions remain."
+    },
+    {
+      "id": "p04",
+      "tag": "#race",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Async / Concurrency Race Condition Fix",
+      "prompt": "INSPECT: Read the target endpoint/function and identify every shared mutable variable, file write, or read-modify-write DB sequence accessed concurrently. EXECUTE: Redesign the critical section with a keyed async mutex/queue, atomic file rename, or database transaction/optimistic lock so concurrent calls are 100% safe. CONSTRAINTS: Avoid global locks that serialize unrelated keys; prevent deadlock on thrown exceptions by releasing locks in finally blocks. VERIFY: Run a concurrent stress test (e.g., Promise.all / asyncio.gather with 20 parallel calls) and confirm zero state corruption."
+    },
+    {
+      "id": "p05",
+      "tag": "#deps",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Dependency & Version Conflict Resolver",
+      "prompt": "INSPECT: Read package.json / requirements.txt / go.mod and lockfiles to detect the exact package manager, Node/Python runtime version, and module system (ESM vs CJS). EXECUTE: Pinpoint the exact peer dependency conflict, transitive mismatch, or ESM/CJS collision and apply the minimal config/manifest fix plus exact install commands. CONSTRAINTS: Never blanket-upgrade unrelated packages or blindly suggest --force unless documented as a last resort. VERIFY: Run a clean install and build/import check to confirm zero resolution errors."
+    },
+    {
+      "id": "p06",
+      "tag": "#regex",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Regex & Parsing Edge-Case Fix",
+      "prompt": "INSPECT: Read the parser/regex and its callers to see expected input/output contracts. EXECUTE: Rewrite the regex or replace it with a deterministic linear-time parser that safely handles empty, malformed, Unicode, multiline, and oversized inputs without catastrophic backtracking (ReDoS). CONSTRAINTS: Eliminate nested quantifiers like (a+)+; enforce max input length bounds where appropriate. VERIFY: Write and execute at least 5 unit tests covering edge cases and a long adversarial string to verify sub-millisecond execution."
+    },
+    {
+      "id": "p07",
+      "tag": "#deadlock",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Deadlock & Thread/Goroutine Starvation Resolver",
+      "prompt": "INSPECT: Read the concurrent worker implementation and map every lock acquisition order, semaphore, channel send/receive, and awaited task. EXECUTE: Enforce a strict global lock-ordering hierarchy, add timeout-based acquisition, buffer/select channels safely, and eliminate circular waits. CONSTRAINTS: Never silently drop work on timeout—log and propagate or requeue cleanly. VERIFY: Run a high-concurrency stress test with a hard timeout to prove zero deadlocks or goroutine/task leaks."
+    },
+    {
+      "id": "p08",
+      "tag": "#crash",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Unhandled Exception & Crash Loop Triage",
+      "prompt": "INSPECT: Inspect entry points, process lifecycle hooks, and crash logs to locate unhandled promise rejections, uncaught exceptions, or bad signal handling. EXECUTE: Add a centralized lifecycle error handler that logs structured diagnostics, drains active connections, flushes buffers, and exits cleanly on SIGTERM/SIGINT/uncaughtException. CONSTRAINTS: Do NOT keep the process running in a corrupted state after uncaughtException; flush logs and exit with a non-zero code so PM2/systemd restarts cleanly. VERIFY: Verify syntax and test graceful shutdown via signal handling."
+    },
+    {
+      "id": "p09",
+      "tag": "#state",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "State Corruption in State Managers",
+      "prompt": "INSPECT: Detect the active state manager (Redux, Zustand, Pinia, or custom store) and inspect all actions/reducers mutating the target state slice. EXECUTE: Eliminate direct in-place object/array mutations breaking reactivity and refactor into strictly immutable updates or atomic reducer transitions. CONSTRAINTS: Keep selectors and external component contracts unchanged. VERIFY: Run unit tests or state transition assertions to confirm referential integrity and zero stale state."
+    },
+    {
+      "id": "p10",
+      "tag": "#tz",
+      "category": "1. Coding Bugs & Root Cause Debugging",
+      "title": "Timezone, DST & UTC Calculation Bug Fix",
+      "prompt": "INSPECT: Locate all date parsing, arithmetic, and formatting logic in the target file and check existing date libraries in the workspace. EXECUTE: Refactor storage and computation to use UTC/ISO-8601 exclusively, converting to the user's IANA timezone only at the presentation layer. CONSTRAINTS: Never use manual millisecond offsets (e.g., +5.5*3600*1000) for DST-sensitive zones or naive local Date() parsing. VERIFY: Test across DST spring-forward, fall-back, and midnight-boundary timestamps."
+    },
+    {
+      "id": "p11",
+      "tag": "#tasks",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Generate Production tasks.json",
+      "prompt": "INSPECT: Read package.json / pyproject.toml / Makefile and existing .vscode configs to detect the real runtime and scripts. EXECUTE: Create or update .vscode/tasks.json with tasks for: (1) dev server with hot-reload, (2) lint + typecheck, (3) unit tests, and (4) clean build, using proper problemMatchers and presentation settings. CONSTRAINTS: Only reference scripts and binaries that actually exist in the workspace. VERIFY: Validate JSON syntax and test-run the lint/test task."
+    },
+    {
+      "id": "p12",
+      "tag": "#launch",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Node.js / Python Attach Debugger (launch.json)",
+      "prompt": "INSPECT: Detect the project runtime (Node.js/TS or Python), entry file, .env location, and build/sourcemap output directories. EXECUTE: Generate .vscode/launch.json with both Launch and Attach configurations, loading .env, skipping internal runtime/library frames, and mapping source maps cleanly. CONSTRAINTS: Do not hardcode machine-specific absolute paths; use ${workspaceFolder}. VERIFY: Validate JSON syntax and verify the configured entry file and port match the app."
+    },
+    {
+      "id": "p13",
+      "tag": "#compound",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Multi-Service Compound Debug Setup",
+      "prompt": "INSPECT: Inspect the backend, worker, and frontend directories to identify entry points, ports, and start commands. EXECUTE: Configure .vscode/launch.json with a compound configuration launching all services simultaneously with separate integrated terminals and stopAll enabled. CONSTRAINTS: Ensure no port collisions between services and avoid hardcoded credentials. VERIFY: Validate JSON syntax and confirm every referenced config name exists in configurations[]."
+    },
+    {
+      "id": "p14",
+      "tag": "#precommit",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Automated Pre-Commit / Lint Fix Task",
+      "prompt": "INSPECT: Check existing linters/formatters (Prettier, ESLint, Ruff, Black) and git hooks in the repo. EXECUTE: Create a VS Code task and companion cross-platform script that formats staged files, checks syntax, scans for hardcoded secrets/API keys, and aborts on failure. CONSTRAINTS: Operate only on staged files so unstaged work is never clobbered. VERIFY: Run the script in dry-run or against current staged files and verify exit codes."
+    },
+    {
+      "id": "p15",
+      "tag": "#deploy",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Remote SSH / VPS Deploy Task",
+      "prompt": "INSPECT: Inspect the workspace structure, ignore files, and process manager (PM2 or systemd). EXECUTE: Write a .vscode/tasks.json deploy task that syncs changed files via rsync/scp (excluding node_modules, .git, .env, __pycache__), restarts the remote service, and streams the last 30 log lines. CONSTRAINTS: Never hardcode SSH passwords or overwrite remote .env/session auth folders. VERIFY: Validate JSON and verify shell quoting works on the user's OS."
+    },
+    {
+      "id": "p16",
+      "tag": "#devcontainer",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "DevContainer Configuration (.devcontainer.json)",
+      "prompt": "INSPECT: Inspect runtime versions, system dependencies (e.g., ffmpeg, build-essential), and ports used by the repository. EXECUTE: Generate .devcontainer/devcontainer.json and a lean Dockerfile with a non-root user, required VS Code extensions, port forwarding, and postCreateCommand dependency install. CONSTRAINTS: Pin base image versions and never run the container as root unnecessarily. VERIFY: Validate JSON and Dockerfile syntax."
+    },
+    {
+      "id": "p17",
+      "tag": "#wsl",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "WSL2 / Remote Linux Debug Bridge",
+      "prompt": "INSPECT: Check workspace paths, build output paths, and existing launch.json settings. EXECUTE: Configure .vscode/launch.json with exact localRoot/remoteRoot pathMappings so breakpoints resolve reliably between Windows host paths and WSL2/Remote Linux paths. CONSTRAINTS: Avoid mixing backslashes in Linux remote paths. VERIFY: Validate JSON syntax and confirm pathMappings align with sourcemaps."
+    },
+    {
+      "id": "p18",
+      "tag": "#dockerdebug",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Docker-Compose Live Debugger Task",
+      "prompt": "INSPECT: Read docker-compose.yml and Dockerfile to detect service names, ports, and runtime debug flags (--inspect / debugpy). EXECUTE: Create a paired .vscode/tasks.json + launch.json workflow that starts compose services with debug ports exposed, waits for container health checks, and attaches the debugger. CONSTRAINTS: Bind debug ports to 127.0.0.1 only, never 0.0.0.0 in production compose files. VERIFY: Validate compose YAML and VS Code JSON files."
+    },
+    {
+      "id": "p19",
+      "tag": "#dbtask",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Automated Database Migration & Seed Task",
+      "prompt": "INSPECT: Detect the database engine (SQLite, PostgreSQL, MySQL) and migration tool (Prisma, Knex, Alembic, raw SQL) in the repo. EXECUTE: Create a VS Code task that verifies DB connectivity, runs pending migrations, applies idempotent seed fixtures, and optionally opens an interactive CLI terminal. CONSTRAINTS: Guard seed operations so they never run against production DATABASE_URLs. VERIFY: Validate JSON and dry-run/test the migration command."
+    },
+    {
+      "id": "p20",
+      "tag": "#keys",
+      "category": "2. VS Code Tasks, Launch & Workflow Automation",
+      "title": "Custom Workspace Keybindings & Macros",
+      "prompt": "INSPECT: Check existing workspace test/run commands and OS platform (Windows/Linux/macOS). EXECUTE: Provide a clean keybindings.json snippet with strict context-aware when-clauses (editorTextFocus, terminalFocus, inDebugMode) for running code, clearing logs, and jumping between source and test files. CONSTRAINTS: Do not shadow critical native shortcuts (Ctrl+C, Ctrl+V, Ctrl+S, Ctrl+P). VERIFY: Validate JSON syntax and ensure all command IDs are valid VS Code commands."
+    },
+    {
+      "id": "p21",
+      "tag": "#cors",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Local Dev CORS Bypass (Reverse Proxy)",
+      "prompt": "INSPECT: Read the frontend dev server config (Vite, Next.js, Webpack) and backend API base URL configuration. EXECUTE: Configure a clean dev-server proxy rule (or lightweight local reverse proxy script) forwarding API routes with proper Host/Origin headers so local dev has zero CORS failures. CONSTRAINTS: Never suggest disabling browser web security or setting Access-Control-Allow-Origin: * with credentials in production. VERIFY: Verify config syntax and confirm proxied route paths match frontend fetch calls."
+    },
+    {
+      "id": "p22",
+      "tag": "#ssl",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Self-Signed SSL / TLS Bypass for Dev Environment",
+      "prompt": "INSPECT: Inspect the local HTTPS setup and runtime (Node.js/Python) failing with certificate verification errors. EXECUTE: Configure mkcert or a local trusted CA using NODE_EXTRA_CA_CERTS / REQUESTS_CA_BUNDLE so local HTTPS works cleanly. CONSTRAINTS: Strictly forbid NODE_TLS_REJECT_UNAUTHORIZED=0 or rejectUnauthorized: false hacks. VERIFY: Test an HTTPS request against the local endpoint and verify zero cert errors."
+    },
+    {
+      "id": "p23",
+      "tag": "#types",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Strict Type-Checking Escape & Safe Boundary Narrowing",
+      "prompt": "INSPECT: Read the failing TypeScript file and tsconfig.json to understand the strict compiler errors and external payload shape. EXECUTE: Replace unsafe casts with unknown, custom type predicates, or Zod/Valibot boundary schemas to narrow untrusted data cleanly. CONSTRAINTS: Zero 'as any', zero '@ts-ignore', and zero weakening of tsconfig strict flags. VERIFY: Run tsc --noEmit and confirm zero TypeScript errors."
+    },
+    {
+      "id": "p24",
+      "tag": "#peer",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Package Manager Peer-Dependency Conflict Bypass",
+      "prompt": "INSPECT: Read package.json and the lockfile (npm, yarn, or pnpm) to identify the exact conflicting peer dependency tree. EXECUTE: Add minimal targeted overrides (npm) or resolutions (yarn/pnpm) in package.json so installs succeed deterministically on any machine. CONSTRAINTS: Do not rely on --legacy-peer-deps or --force flags; document why the override is safe. VERIFY: Run the package manager install and confirm the app builds and passes smoke tests."
+    },
+    {
+      "id": "p25",
+      "tag": "#cachebust",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Aggressive Cache-Busting Bypass",
+      "prompt": "INSPECT: Read the frontend build config and static file server / reverse proxy headers. EXECUTE: Enable content-hashed asset filenames, set Cache-Control: no-cache for HTML entry points and immutable long-TTL for hashed chunks, plus a lightweight version-manifest check. CONSTRAINTS: Never disable caching for hashed immutable static assets. VERIFY: Run a production build and inspect generated filenames and response headers."
+    },
+    {
+      "id": "p26",
+      "tag": "#corpproxy",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Corporate Proxy / VPN SSL Interception Bypass",
+      "prompt": "INSPECT: Identify which CLI tools (git, npm, pip, docker) and OS environment are affected by inspecting proxy certificates. EXECUTE: Provide exact commands and config snippets to trust the root CA bundle via http.sslCAInfo, npm cafile, PIP_CERT, and OS cert store. CONSTRAINTS: Never disable SSL/TLS verification globally. VERIFY: Provide a verification command (curl/pip/npm ping) proving TLS validation succeeds."
+    },
+    {
+      "id": "p27",
+      "tag": "#ratelimit",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "API Rate Limit Throttling Bypass (Token Bucket)",
+      "prompt": "INSPECT: Read the API client module and identify concurrency patterns, target RPM/RPS limits, and whether the app runs single-process or clustered (PM2/multi-worker). EXECUTE: Implement a Token Bucket rate limiter with an async FIFO queue, Retry-After header support, and full-jitter backoff below the target RPM. CONSTRAINTS: Note explicitly if running under PM2 cluster/multi-process that an in-memory bucket is per-process and requires Redis for global limits; bound queue size to avoid memory growth. VERIFY: Run a burst test firing 2x the limit and verify outgoing spacing stays strictly under the cap."
+    },
+    {
+      "id": "p28",
+      "tag": "#ramcap",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "RAM Allocation Cap Bypass (DB/Export Backpressure Pipeline)",
+      "prompt": "INSPECT: Read the large export/aggregation code causing 'JavaScript heap out of memory' or Python MemoryError. EXECUTE: Refactor database cursors, JSON/CSV serialization, and HTTP/file sinks into a true backpressure-aware streaming pipeline (stream.pipeline / async generators) keeping RSS under 60MB. CONSTRAINTS: Do NOT fix this by bumping --max-old-space-size; never accumulate full result arrays in RAM. VERIFY: Run a memory-profiled test with a large synthetic dataset and verify flat heap usage."
+    },
+    {
+      "id": "p29",
+      "tag": "#portkill",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Port Conflict & Stuck Socket EADDRINUSE Killer Task",
+      "prompt": "INSPECT: Check the dev server port, OS platform (Windows PowerShell / Linux Bash), and existing .vscode/tasks.json. EXECUTE: Add a cross-platform preLaunchTask that detects and gracefully terminates only the process listening on the target port before launching the server. CONSTRAINTS: Never kill unrelated processes (no blind pkill -9 node); handle the case where no process is listening with exit code 0. VERIFY: Test the task both when the port is free and when occupied."
+    },
+    {
+      "id": "p30",
+      "tag": "#gitlock",
+      "category": "3. Engineering Workarounds & Dev Bypasses",
+      "title": "Git Lockfile & Divergent Branch Rebase Conflict Bypass",
+      "prompt": "INSPECT: Detect the active package manager lockfile (package-lock.json, pnpm-lock.yaml, yarn.lock) and target base branch. EXECUTE: Provide the exact 3-step git + package manager command sequence to take the target lockfile, preserve branch manifest changes, and cleanly regenerate the lockfile. CONSTRAINTS: Never manually edit lockfile conflict markers; never run git push --force without --force-with-lease. VERIFY: Confirm git status shows zero unresolved conflicts and install succeeds cleanly."
+    },
+    {
+      "id": "p31",
+      "tag": "#stream",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "RAM-Safe File I/O Stream Conversion",
+      "prompt": "INSPECT: Read the target file and locate all fs.readFileSync, fs.readFile, Buffer.concat, or full-file in-memory media downloads/uploads. EXECUTE: Convert file reading, hashing, transcoding, and uploading into pure fs.createReadStream / pipeline flows with explicit backpressure and finally-block temp-file unlinking. CONSTRAINTS: Ensure temp files are deleted on success, error, and client abort; never buffer multi-MB media in RAM. VERIFY: Run syntax checks and test with a multi-MB file verifying temp directory is clean afterward."
+    },
+    {
+      "id": "p32",
+      "tag": "#split",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Decompose Monolithic File",
+      "prompt": "INSPECT: Read the monolithic file and map all exports, internal shared state, and every file in the workspace importing it. EXECUTE: Split the file into clean, single-responsibility modules under the target directory and keep a thin barrel/index file preserving 100% of existing exports. Apply all edits directly via file tools. CONSTRAINTS: Zero placeholders, zero circular dependencies, and zero broken imports across the repo. VERIFY: Run typecheck/lint/tests and confirm all callers import cleanly."
+    },
+    {
+      "id": "p33",
+      "tag": "#nplus1",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Loop & Database Query Bottleneck Fix (N+1 Elimination)",
+      "prompt": "INSPECT: Audit the target file for awaited DB/HTTP calls inside loops, synchronous I/O in hot paths, and redundant JSON parse/stringify calls. EXECUTE: Batch DB lookups into single IN/JOIN queries and parallelize independent I/O using a bounded concurrency pool/semaphore. CONSTRAINTS: Never use unbounded Promise.all on large arrays; preserve exact output ordering. VERIFY: Run tests and confirm query/call count drops from O(N) to O(1) or O(N/batch)."
+    },
+    {
+      "id": "p34",
+      "tag": "#coldstart",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Reduce Cold Start & Startup Latency",
+      "prompt": "INSPECT: Profile top-level imports, synchronous file reads, and sequential boot checks in the entry file. EXECUTE: Convert heavy optional dependencies to lazy/dynamic imports, run independent boot checks in parallel, and remove dead code. CONSTRAINTS: Do not break startup validation for critical secrets/configs. VERIFY: Measure startup time before and after and run smoke tests."
+    },
+    {
+      "id": "p35",
+      "tag": "#chunk",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Memory-Efficient File/Data Chunking",
+      "prompt": "INSPECT: Read the target function processing large arrays/datasets and identify synchronous CPU blocking or memory spikes. EXECUTE: Convert processing into an async chunked iterator with configurable batch size, yielding to the event loop (setImmediate / asyncio.sleep(0)) between batches. CONSTRAINTS: Handle partial final chunks and propagate errors cleanly without silent skips. VERIFY: Test with empty, exact-multiple, and non-multiple dataset sizes."
+    },
+    {
+      "id": "p36",
+      "tag": "#bundle",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Bundle Size & Tree-Shaking Optimizer",
+      "prompt": "INSPECT: Inspect package.json and the bundler config (Vite/Webpack/Next.js) to locate bloated non-tree-shakeable imports (full lodash, moment, icon packs). EXECUTE: Replace heavy libraries with modular/native equivalents, enable route-level dynamic imports, and configure proper chunk splitting. CONSTRAINTS: Preserve identical UI/runtime behavior across all routes. VERIFY: Run production build and compare bundle output sizes."
+    },
+    {
+      "id": "p37",
+      "tag": "#lru",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "In-Memory Caching with TTL & Eviction (LRU Cache)",
+      "prompt": "INSPECT: Read the expensive function and check its argument shapes, error modes, and concurrency profile. EXECUTE: Wrap it in an O(1) bounded LRU cache with configurable max entries, TTL expiration, in-flight request deduplication (singleflight), and explicit invalidation hooks. CONSTRAINTS: Never cache rejected/error responses; use deterministic cache keys. VERIFY: Unit test cache hit, TTL expiry, LRU eviction, and concurrent singleflight deduplication."
+    },
+    {
+      "id": "p38",
+      "tag": "#sqlopt",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Database Indexing & Query Plan Optimizer",
+      "prompt": "INSPECT: Read the slow SQL query, table schema, and EXPLAIN ANALYZE output (or ask for schema if missing). EXECUTE: Identify full table scans, non-sargable predicates, or sort spills; write the exact compound/partial CREATE INDEX statements and rewrite the query to use index-only/index scans. CONSTRAINTS: Avoid redundant indexes that hurt write throughput; use CONCURRENTLY for Postgres production migrations. VERIFY: Validate SQL syntax and confirm rewritten query returns identical rows."
+    },
+    {
+      "id": "p39",
+      "tag": "#workers",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Asynchronous Worker Thread Offloading",
+      "prompt": "INSPECT: Identify CPU-bound functions (image/PDF/crypto/compression) blocking the main event loop. EXECUTE: Offload execution to a bounded Worker Thread / Process Pool with Transferable Objects (where applicable), task timeouts, and full error/stack propagation. CONSTRAINTS: Never spawn a new worker per request; reuse a bounded pool sized to available CPU cores and clean up on shutdown. VERIFY: Run tests confirming main thread responsiveness and proper error handling."
+    },
+    {
+      "id": "p40",
+      "tag": "#pure",
+      "category": "4. Code Refactoring & Performance Optimization",
+      "title": "Pure Function & Immutable State Transformation",
+      "prompt": "INSPECT: Read the target module and identify hidden global state, side effects, and input mutations. EXECUTE: Extract core business logic into pure, deterministic functions with explicit dependency injection and immutable outputs, keeping I/O at the thin outer shell. CONSTRAINTS: Maintain backwards compatibility at the module boundary. VERIFY: Write and run fast, zero-mock unit tests for every extracted pure function."
+    },
+    {
+      "id": "p41",
+      "tag": "#retry",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "Resilient HTTP Client with Retry & Failover",
+      "prompt": "INSPECT: Read the external HTTP client wrapper and check timeout, error handling, and upstream endpoints. EXECUTE: Wrap calls with exponential backoff + full jitter, retrying strictly on 429/502/503/504/network resets, honoring Retry-After headers, and failing over to the backup endpoint after configured failures. CONSTRAINTS: Never retry non-idempotent POSTs blindly without idempotency awareness or retry 400/401/403 client errors. VERIFY: Unit test retry backoff, Retry-After compliance, and backup failover with mocked responses."
+    },
+    {
+      "id": "p42",
+      "tag": "#sse",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "SSE (Server-Sent Events) Streaming Fix",
+      "prompt": "INSPECT: Read the SSE route handler and reverse proxy config to find buffering, timeout drops, or leaked upstream connections. EXECUTE: Set Content-Type: text/event-stream, Cache-Control: no-cache, Connection: keep-alive, X-Accel-Buffering: no; emit 15s keep-alive heartbeat comments; abort upstream requests immediately on client disconnect. CONSTRAINTS: Always clear heartbeat intervals in a finally/close handler so sockets never leak. VERIFY: Test live chunk flushing and verify upstream abort triggers when client disconnects mid-stream."
+    },
+    {
+      "id": "p43",
+      "tag": "#range",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "HTTP Byte-Range & Resume Support",
+      "prompt": "INSPECT: Read the media/file stream server and inspect how headers, content-length, and upstream/disk streams are handled. EXECUTE: Implement RFC-compliant HTTP 206 Partial Content with Accept-Ranges: bytes, Content-Range validation, 416 Range Not Satisfiable handling, and clean HEAD support. CONSTRAINTS: Validate start/end byte bounds strictly against total file size and destroy streams immediately on client abort. VERIFY: Test with curl -r 0-1023 and curl -I to verify 206 status, exact byte length, and headers."
+    },
+    {
+      "id": "p44",
+      "tag": "#openai",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "OpenAI-Compatible API Shim Validation",
+      "prompt": "INSPECT: Read the OpenAI API shim routes (/v1/chat/completions, /v1/models) and request/response schemas. EXECUTE: Audit compliance for both stream: true and stream: false: tolerate extra client fields without 422, emit opening role delta, report accurate token usage, handle stop sequences, and terminate streams cleanly with data: [DONE]. CONSTRAINTS: Never crash on multimodal content arrays or missing optional fields. VERIFY: Run automated HTTP tests against both streaming and non-streaming endpoints."
+    },
+    {
+      "id": "p45",
+      "tag": "#ws",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "WebSocket Disconnect, Auto-Reconnect & Heartbeat Manager",
+      "prompt": "INSPECT: Read the WebSocket client and identify silent disconnects, missing heartbeats, or duplicate listeners on reconnect. EXECUTE: Build a clean state-machine manager with 30s ping/pong liveness checks, exponential backoff reconnects with jitter, bounded offline send queue, and message deduplication. CONSTRAINTS: Remove old socket event listeners before attaching new ones to prevent listener leaks. VERIFY: Simulate socket drop and verify clean reconnect and queue flush."
+    },
+    {
+      "id": "p46",
+      "tag": "#webhook",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "Webhook Ingestion & Cryptographic Signature Verification",
+      "prompt": "INSPECT: Read the webhook route and body-parsing middleware to ensure raw request bytes are accessible before JSON parsing. EXECUTE: Verify HMAC-SHA256 signatures against the raw body using constant-time comparison (timingSafeEqual / hmac.compare_digest), enforce a 5-minute replay timestamp window, acknowledge 200 OK quickly, and offload processing. CONSTRAINTS: Never use === for signature comparison or verify against re-serialized JSON. VERIFY: Test valid signature, tampered body, and expired timestamp cases."
+    },
+    {
+      "id": "p47",
+      "tag": "#upload",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "Multipart / Chunked Large File Uploader with Resume",
+      "prompt": "INSPECT: Read the upload endpoint and storage layer to check file size limits, temp paths, and disk constraints. EXECUTE: Implement chunked resumable upload endpoints with per-chunk SHA-256 checksum verification, pre-flight free disk-space checks, atomic final assembly, and TTL cleanup for orphaned uploads. CONSTRAINTS: Sanitize upload IDs/filenames against path traversal; never load chunks into global memory. VERIFY: Test chunk upload, resume after interruption, checksum mismatch rejection, and cleanup."
+    },
+    {
+      "id": "p48",
+      "tag": "#graphql",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "GraphQL N+1 Query & DataLoader Implementation",
+      "prompt": "INSPECT: Read the GraphQL resolvers and request context creation to pinpoint nested field N+1 DB calls. EXECUTE: Create per-request DataLoader instances in context, batching individual ID lookups into single IN (...) queries while preserving input key order. CONSTRAINTS: Never share a DataLoader instance across different HTTP requests (prevents cross-user cache leaks). VERIFY: Execute a nested query and verify SQL query count drops to 1 per level."
+    },
+    {
+      "id": "p49",
+      "tag": "#grpc",
+      "category": "5. API, Networking, Streaming & Proxy Problem-Solving",
+      "title": "gRPC Client/Server Stream Diagnostics",
+      "prompt": "INSPECT: Read the gRPC client/server channel options, interceptors, and stream error handlers. EXECUTE: Configure HTTP/2 keepalive pings, structured metadata logging interceptors, explicit deadline propagation, and automatic stream re-establishment with backoff. CONSTRAINTS: Match keepalive intervals to server-side minimum thresholds to avoid ENHANCE_YOUR_CALM (GOAWAY). VERIFY: Verify compilation/syntax and test deadline and reconnect behavior."
+    },
+    {
+      "id": "p50",
+      "tag": "#plan",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Plan-First Implementation (No Broken Edits)",
+      "prompt": "INSPECT: Read all relevant files in the workspace before proposing any change. EXECUTE: Output a concise plan listing: (1) exact files to create/modify, (2) data structures/interfaces, (3) failure edge cases. Wait for confirmation if architectural ambiguity exists; otherwise implement completely via file tools with zero TODOs. CONSTRAINTS: Never leave stub functions, commented-out placeholders, or unverified imports. VERIFY: Run build, lint, and relevant tests after implementation."
+    },
+    {
+      "id": "p51",
+      "tag": "#keyrot",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Multi-Key / Account Auto-Rotator",
+      "prompt": "INSPECT: Read the existing API client and .env configuration for the target service. EXECUTE: Build an async-safe key rotator reading comma-separated keys from .env, tracking per-key 429 cooldown timestamps, automatically selecting healthy keys, and atomically persisting usage stats to JSON. CONSTRAINTS: Never log raw API keys; handle the all-keys-exhausted state with an explicit next-available timestamp error. VERIFY: Unit test rotation order, 429 cooldown skip, recovery after cooldown, and atomic JSON persistence."
+    },
+    {
+      "id": "p52",
+      "tag": "#queue",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Persistent Job Queue with Crash Recovery",
+      "prompt": "INSPECT: Read the fire-and-forget background tasks and check available storage (SQLite / WAL JSON) in the project. EXECUTE: Implement a disk-backed persistent job queue with configurable concurrency, exponential retry (max 3 attempts), dead-letter handling, and automatic recovery of in-progress jobs on server restart. CONSTRAINTS: Use atomic writes/transactions so crashes never corrupt the queue file. VERIFY: Test enqueue, retry, failure to dead-letter, and simulated restart recovery."
+    },
+    {
+      "id": "p53",
+      "tag": "#bootcheck",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Config & Secrets Validator at Boot",
+      "prompt": "INSPECT: Scan the codebase for process.env / os.environ usage, bound ports, and spawned external binaries (ffmpeg, yt-dlp, etc.). EXECUTE: Create a boot validator module that checks required env vars, types, binary availability, and writable temp directories before starting servers. CONSTRAINTS: Mask secret values in all error outputs; fail fast with a clear actionable checklist. VERIFY: Test boot with a missing required env var and confirm immediate clean exit."
+    },
+    {
+      "id": "p54",
+      "tag": "#dbmig",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Zero-Downtime Database Migration Helper",
+      "prompt": "INSPECT: Read existing schema definitions, ORM models, and migration history. EXECUTE: Design and generate an expand-contract migration plan: (1) add nullable new column, (2) dual-write in app/triggers, (3) chunked backfill script with throttling, (4) switch reads and drop legacy column safely. CONSTRAINTS: Never run full-table locking ALTER TABLE operations on live high-traffic tables. VERIFY: Validate migration SQL/scripts and include rollback steps for each phase."
+    },
+    {
+      "id": "p55",
+      "tag": "#pubsub",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Event-Driven Pub/Sub with Idempotency Key",
+      "prompt": "INSPECT: Read the message consumer, event schema, and storage layer (Redis/SQL). EXECUTE: Implement idempotent event consumption storing processed event IDs with a 24-hour TTL (atomic SET NX / UNIQUE constraint), rejecting duplicates and handling out-of-order timestamps safely. CONSTRAINTS: Commit idempotency state atomically or release the lock on transient failure so retries are not falsely blocked. VERIFY: Test duplicate event delivery and transient failure retry."
+    },
+    {
+      "id": "p56",
+      "tag": "#rbac",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Role-Based Access Control (RBAC) & Middleware Engine",
+      "prompt": "INSPECT: Read the existing authentication middleware (JWT/session) and route definitions. EXECUTE: Implement a type-safe RBAC matrix with role hierarchy and middleware validating required permissions, returning structured 403 responses without leaking internal policy internals. CONSTRAINTS: Default-deny all protected routes when permissions are missing or malformed. VERIFY: Unit test allowed role, inherited role, unauthorized role (403), and unauthenticated request (401)."
+    },
+    {
+      "id": "p57",
+      "tag": "#circuit",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Circuit Breaker Pattern for Unstable Downstream APIs",
+      "prompt": "INSPECT: Read the downstream API client and identify failure modes and safe fallback behavior. EXECUTE: Wrap calls in a Closed / Open / Half-Open Circuit Breaker (e.g., 50% failure rate over a sliding window of 10 calls, 30s reset timeout) with structured state-transition logging and graceful fallback. CONSTRAINTS: Do not count expected 4xx user validation errors as downstream outages. VERIFY: Unit test Closed -> Open -> Half-Open -> Closed transitions."
+    },
+    {
+      "id": "p58",
+      "tag": "#tenant",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Multi-Tenant Data Isolation Strategy",
+      "prompt": "INSPECT: Read the database layer, ORM/query builders, and request auth context. EXECUTE: Enforce mandatory tenant scoping via PostgreSQL Row-Level Security (RLS) or a centralized scoped repository wrapper so queries cannot execute without a verified tenant_id. CONSTRAINTS: Never trust a client-supplied tenant_id body param over the authenticated token claim. VERIFY: Write an isolation test proving Tenant A cannot read or mutate Tenant B records."
+    },
+    {
+      "id": "p59",
+      "tag": "#trace",
+      "category": "6. Architecture & New Feature Implementation",
+      "title": "Distributed Tracing & Correlation ID Injection",
+      "prompt": "INSPECT: Read the HTTP framework middleware, logger setup (Pino/Winston/logging), and outbound HTTP clients. EXECUTE: Extract or generate an x-correlation-id per request using AsyncLocalStorage / contextvars, auto-attach it to all log entries, return it in response headers, and propagate it to downstream calls. CONSTRAINTS: Sanitize incoming correlation IDs to prevent log injection. VERIFY: Run a request test confirming the same ID appears in logs, downstream headers, and response headers."
+    },
+    {
+      "id": "p60",
+      "tag": "#jsonfix",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Structured JSON Output Enforcer (Schema Guard)",
+      "prompt": "INSPECT: Read the LLM call site and expected output schema. EXECUTE: Wrap the call with strict Zod/Pydantic validation, strip markdown fences/preamble via balanced-brace extraction, and implement up to 2 automatic schema-repair retries feeding validation errors back to the model. CONSTRAINTS: Never use eval(); enforce a hard retry cap to avoid infinite token loops. VERIFY: Unit test clean JSON, fenced JSON, trailing-comma/broken JSON repair, and max-retry failure."
+    },
+    {
+      "id": "p61",
+      "tag": "#tokencut",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Token Counter & Dynamic Context Truncation Manager",
+      "prompt": "INSPECT: Read the chat history manager and identify the target model's context budget and tokenizer. EXECUTE: Build a sliding-window pruner that accurately estimates/counts tokens, always preserves the system prompt and latest N turns, and compresses older turns into a concise summary block. CONSTRAINTS: Never split a tool_call and its matching tool_result pair across the truncation boundary. VERIFY: Test with oversized conversation histories confirming total tokens stay strictly within budget."
+    },
+    {
+      "id": "p62",
+      "tag": "#router",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Multi-Model Fallback & Cost Optimizer (Router)",
+      "prompt": "INSPECT: Read existing LLM provider clients, API keys, and latency/cost priorities. EXECUTE: Build a model router that dispatches simple tasks to fast/cheap tiers, complex tasks to primary models, and automatically fails over on timeout/429/5xx while normalizing response shapes. CONSTRAINTS: Preserve streaming compatibility across providers and track failover metrics. VERIFY: Test primary success, 429 failover to backup, and all-providers-down error handling."
+    },
+    {
+      "id": "p63",
+      "tag": "#rag",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "RAG Vector Search & Chunking Pipeline Fixer",
+      "prompt": "INSPECT: Read the document ingestion chunker, embedding model, and retrieval query pipeline. EXECUTE: Upgrade chunking to structure-aware/semantic splitting with configurable size and overlap, preserve source metadata, and combine vector similarity with BM25 keyword search using Reciprocal Rank Fusion (RRF). CONSTRAINTS: Never drop code blocks or tables mid-structure; deduplicate overlapping chunks before prompting. VERIFY: Run sample retrieval queries and verify top-k relevance and metadata integrity."
+    },
+    {
+      "id": "p64",
+      "tag": "#promptsec",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Prompt Injection & Sanitization Filter",
+      "prompt": "INSPECT: Audit every place where untrusted user or web-scraped text is concatenated into LLM prompts. EXECUTE: Enforce strict role separation, wrap untrusted data in XML-style data delimiters, sanitize control tokens, and add an output/tool-call policy guard before executing privileged actions. CONSTRAINTS: Do not rely solely on keyword blacklists; enforce least-privilege at the tool execution boundary. VERIFY: Test against delimiter-escape and instruction-override attack payloads."
+    },
+    {
+      "id": "p65",
+      "tag": "#streammd",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Streaming LLM Parser & Real-time Markdown Renderer",
+      "prompt": "INSPECT: Read the SSE consumer and Markdown rendering component causing flicker or broken UTF-8/code blocks. EXECUTE: Use a proper stateful UTF-8 TextDecoder({stream: true}), accumulate SSE lines safely across chunk boundaries, throttle DOM updates to animation frames, and auto-close unclosed code fences during partial renders. CONSTRAINTS: Never split multi-byte Unicode (e.g., Sinhala/emoji) characters across chunks. VERIFY: Test with chunked multi-byte Sinhala text, partial tables, and multi-line code blocks."
+    },
+    {
+      "id": "p66",
+      "tag": "#tools",
+      "category": "7. Modern AI, Agentic Workflows & LLM Integration",
+      "title": "Tool / Function Calling Execution Engine",
+      "prompt": "INSPECT: Read the agent loop, tool schemas, and local function handlers. EXECUTE: Build a type-safe tool dispatcher that validates LLM arguments against JSON Schema, executes handlers with timeouts, catches errors as structured tool results, and enforces a max-iteration loop guard. CONSTRAINTS: Never execute arbitrary shell/eval from unvalidated LLM arguments; cap recursion depth. VERIFY: Unit test valid tool call, invalid arguments rejection, tool timeout, and max-turn stop."
+    },
+    {
+      "id": "p67",
+      "tag": "#sec",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Security & Injection Audit",
+      "prompt": "INSPECT: Audit all target files for shell command injection (exec vs execFile/spawn), path traversal, SSRF, SQL/NoSQL injection, hardcoded secrets, and stack-trace leaks. EXECUTE: List findings ranked by severity (Critical/High/Medium) and patch every vulnerability cleanly using parameterized queries, execFile with argument arrays, and path.resolve prefix checks. CONSTRAINTS: Do not break existing legitimate inputs while hardening. VERIFY: Run tests including malicious payload assertions for each patched class."
+    },
+    {
+      "id": "p68",
+      "tag": "#tests",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Edge-Case Test Suite Generator",
+      "prompt": "INSPECT: Detect the project's test runner (Vitest, Jest, Node test, Pytest) and read the target module thoroughly. EXECUTE: Write an automated test suite covering happy paths, null/empty inputs, oversized payloads, timeouts, malformed JSON, and concurrent execution with all external I/O mocked. CONSTRAINTS: Tests must run 100% offline, deterministically, and finish in under 3 seconds. VERIFY: Execute the test runner and confirm 100% pass rate."
+    },
+    {
+      "id": "p69",
+      "tag": "#tdd",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Reproduce-First Bug Fix (TDD)",
+      "prompt": "INSPECT: Read the bug description and the relevant source code to locate the faulty behavior. EXECUTE: (1) Write a minimal failing test reproducing the exact bug and run it to confirm failure; (2) apply the surgical fix in the source file; (3) re-run the test until it passes. CONSTRAINTS: Do NOT modify the test to weaken assertions; fix the actual bug. VERIFY: Confirm both the new regression test and existing test suite pass."
+    },
+    {
+      "id": "p70",
+      "tag": "#diff",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Strict Diff & Regression Check",
+      "prompt": "INSPECT: Run git diff (staged and unstaged) and inspect every modified hunk in context. EXECUTE: Flag unintended side effects, missing null checks, broken imports, hardcoded localhost URLs, leaked secrets, or uncleaned temp files, and propose/apply exact line-level fixes. CONSTRAINTS: Focus only on real defects—skip stylistic nitpicks unless they break lint. VERIFY: Re-run linter/tests after applying fixes."
+    },
+    {
+      "id": "p71",
+      "tag": "#mock",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Mock API & Network Interceptor for Tests",
+      "prompt": "INSPECT: Check the HTTP client library and test framework in the repository. EXECUTE: Configure MSW / Nock / respx in the test suite to intercept outbound HTTP calls with realistic fixtures for 200, 400, 429, and 500 responses, blocking accidental real network hits. CONSTRAINTS: Reset handlers after every test to eliminate cross-test leakage. VERIFY: Run the test suite offline and confirm zero live network traffic."
+    },
+    {
+      "id": "p72",
+      "tag": "#fuzz",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Fuzz Testing & Malformed Input Generator",
+      "prompt": "INSPECT: Read the target parser, validator, or API handler to identify input entry points. EXECUTE: Write a deterministic seeded fuzz script running 1,000 iterations of random bytes, deeply nested JSON, huge numbers, null bytes, and injection strings, asserting zero unhandled crashes. CONSTRAINTS: Enforce a strict per-iteration execution timeout guard (e.g., 100ms) and memory cap so catastrophic inputs never freeze CI or local machines; log the seed on any failure for 100% reproducibility. VERIFY: Run the fuzz script and confirm clean completion."
+    },
+    {
+      "id": "p73",
+      "tag": "#cve",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Dependency Vulnerability (CVE) Auditing & Auto-Patch",
+      "prompt": "INSPECT: Run npm audit / pip-audit (or inspect lockfiles) to list High and Critical CVEs and check which are actually reachable. EXECUTE: Apply minimal targeted version bumps or overrides that resolve High/Critical CVEs without introducing breaking major API changes. CONSTRAINTS: Never blindly run npm audit fix --force across major versions. VERIFY: Re-run audit and full build/test suite to confirm zero regressions."
+    },
+    {
+      "id": "p74",
+      "tag": "#flaky",
+      "category": "8. Security, Error Handling & Testing",
+      "title": "Flaky Test Eliminator (Race Condition / Timing Issues)",
+      "prompt": "INSPECT: Read the flaky test and its setup/teardown hooks to find hardcoded sleep() calls, shared mutable globals, or unawaited promises. EXECUTE: Replace arbitrary delays with deterministic event-waiting assertions, isolate per-test state/temp dirs, and use fake timers where appropriate. CONSTRAINTS: Never 'fix' flakiness by simply increasing timeouts to 60s. VERIFY: Run the test 10 consecutive times in a loop and confirm 10/10 passes."
+    },
+    {
+      "id": "p75",
+      "tag": "#cicd",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "GitHub Actions / GitLab CI Pipeline Generator",
+      "prompt": "INSPECT: Inspect the repo runtime, package manager, test/lint scripts, and target deployment platform. EXECUTE: Generate a fast CI/CD workflow with lockfile-keyed dependency caching, concurrency cancel-in-progress, lint + typecheck + test jobs, and gated deployment. CONSTRAINTS: Pin action versions, use least-privilege permissions, and never echo secrets in logs. VERIFY: Validate YAML syntax and confirm every referenced script exists."
+    },
+    {
+      "id": "p76",
+      "tag": "#docker",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "Multi-Stage Dockerfile Size Minifier",
+      "prompt": "INSPECT: Read the existing Dockerfile, .dockerignore, and runtime native dependencies. EXECUTE: Rewrite into a multi-stage build (builder -> slim/alpine/distroless runtime), optimize layer caching (manifests before source), drop build tools, add a non-root user, and tighten .dockerignore. CONSTRAINTS: Keep required shared libs/CA certificates intact so HTTPS and native addons still work. VERIFY: Validate Dockerfile syntax and verify final image builds and boots cleanly."
+    },
+    {
+      "id": "p77",
+      "tag": "#k8s",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "Kubernetes Manifest & Helm Chart Generator",
+      "prompt": "INSPECT: Inspect the service ports, health endpoints, env vars, and resource profile. EXECUTE: Generate production Kubernetes manifests (Deployment, Service, Ingress, HPA, ConfigMap/Secret templates) with explicit CPU/RAM requests & limits, readiness/liveness probes, preStop hook, and RollingUpdate maxUnavailable: 0. CONSTRAINTS: Never commit raw secret values; set runAsNonRoot and readOnlyRootFilesystem where viable. VERIFY: Validate YAML syntax and label selectors across all resources."
+    },
+    {
+      "id": "p78",
+      "tag": "#health",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "Health Check, Graceful Shutdown & SIGTERM Handler",
+      "prompt": "INSPECT: Read the server entry file, DB/Redis pools, and background workers. EXECUTE: Add /healthz (liveness) and /readyz (readiness checking real dependencies), plus SIGTERM/SIGINT handlers that stop accepting new requests, drain in-flight work (up to 30s), close pools, and exit 0. CONSTRAINTS: Ensure /healthz stays lightweight and does not trigger cascading restarts on transient downstream blips. VERIFY: Test /healthz, /readyz, and SIGTERM shutdown behavior."
+    },
+    {
+      "id": "p79",
+      "tag": "#envsync",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "Environment Variable Sync & Encrypted Vault Setup",
+      "prompt": "INSPECT: Read .env.example and scan the codebase for all referenced environment variables. EXECUTE: Write a validation/sync script comparing local .env against .env.example, flagging missing or empty keys, and integrating cleanly with the target secret manager/vault. CONSTRAINTS: Never commit .env or print secret values to stdout/stderr. VERIFY: Run the validator against a sample .env and confirm accurate missing-key reporting."
+    },
+    {
+      "id": "p80",
+      "tag": "#edge",
+      "category": "9. DevOps, CI/CD, Containerization & Cloud",
+      "title": "Cloudflare Worker / Edge Runtime Optimizer",
+      "prompt": "INSPECT: Read the target handler and list all Node-only built-ins (fs, path, crypto, Buffer) incompatible with Edge/Workers runtimes. EXECUTE: Refactor to standard Web APIs (fetch, Web Crypto, Request/Response, ReadableStream, Uint8Array) and optimize for minimal CPU time and zero cold-start bloat. CONSTRAINTS: Respect Edge runtime memory and subrequest limits; validate wrangler.toml compatibility flags if present. VERIFY: Run typecheck and local edge dev/build verification."
+    },
+    {
+      "id": "p81",
+      "tag": "#redlock",
+      "category": "10. Database, Caching & Data Engineering",
+      "title": "Redis Distributed Lock with Auto-Release",
+      "prompt": "INSPECT: Read the Redis client setup and the critical section requiring distributed mutual exclusion. EXECUTE: Implement a fault-tolerant Redis lock using atomic SET key token NX PX ttl, a cryptographically random lock owner token, Lua-scripted compare-and-delete release, and optional watchdog TTL renewal. CONSTRAINTS: Never release a lock with plain DEL (risks deleting another worker's lock after TTL expiry). VERIFY: Unit test lock acquisition, contention rejection, owner-checked release, and TTL auto-expiry."
+    },
+    {
+      "id": "p82",
+      "tag": "#es",
+      "category": "10. Database, Caching & Data Engineering",
+      "title": "ElasticSearch / Full-Text Search Query Optimizer",
+      "prompt": "INSPECT: Read the current search query, index mappings, and analyzers. EXECUTE: Optimize using multi_match with field boosting, controlled fuzziness (AUTO), filter-context clauses for non-scored constraints, and edge_ngram/search_as_you_type mappings for fast autocomplete. CONSTRAINTS: Avoid leading wildcards (*term) and deep from+size pagination (use search_after). VERIFY: Validate query DSL JSON structure and confirm filter vs query separation."
+    },
+    {
+      "id": "p83",
+      "tag": "#mongo",
+      "category": "10. Database, Caching & Data Engineering",
+      "title": "MongoDB Aggregation Pipeline Builder",
+      "prompt": "INSPECT: Read the collection schemas, existing indexes, and query requirements. EXECUTE: Build an optimized aggregation pipeline placing $match and $sort first to leverage indexes, using targeted $lookup pipelines, computing required window/rolling metrics, and using keyset/index-backed pagination. CONSTRAINTS: Avoid unbounded in-memory sorts and unnecessary full-document $project bloat. VERIFY: Validate pipeline stage syntax and list the exact compound index required."
+    },
+    {
+      "id": "p84",
+      "tag": "#sqltx",
+      "category": "10. Database, Caching & Data Engineering",
+      "title": "SQL Transaction Isolation Level & Deadlock Fixer",
+      "prompt": "INSPECT: Read the transactional SQL/ORM code experiencing serialization anomalies or deadlocks. EXECUTE: Set the exact required isolation level (READ COMMITTED with SELECT ... FOR UPDATE vs SERIALIZABLE), order multi-row lock acquisitions deterministically by primary key, and add retry logic on SQLSTATE 40001/40P01. CONSTRAINTS: Keep transactions short—never perform external HTTP calls while holding DB row locks. VERIFY: Test concurrent conflicting transactions and confirm clean retry/commit with zero deadlocks."
+    },
+    {
+      "id": "p85",
+      "tag": "#ingest",
+      "category": "10. Database, Caching & Data Engineering",
+      "title": "High-Volume CSV / Parquet Data Ingestion Pipeline",
+      "prompt": "INSPECT: Read the ingestion script, target DB driver (PostgreSQL/ClickHouse), and row validation schema. EXECUTE: Build a streaming ingestion pipeline reading in bounded chunks (e.g., 10,000 rows), validating schemas with dead-letter error reporting, and bulk-loading via PostgreSQL COPY / ClickHouse native batch inserts. CONSTRAINTS: Maintain constant low RAM regardless of 20GB+ file size; make ingestion resumable/idempotent via staging tables or upserts. VERIFY: Test with a sample multi-chunk file containing both valid and malformed rows."
+    }
+  ]
+}
